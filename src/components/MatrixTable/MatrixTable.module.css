@@ -35,8 +35,17 @@
     }
 }
 
+.matrix-table td {
+    width: 10%
+}
+
 .matrix-table td:first-child {
-    width: 13%
+    width: 5%
+}
+
+
+.matrix-table td:last-child {
+    width: 5%
 }
 
 .add-button {

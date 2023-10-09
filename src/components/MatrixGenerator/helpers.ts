@@ -1,25 +1,22 @@
 import { Cell } from "../../context/MatrixContext";
-
+import _ from 'lodash'
 export const generateThreeDigitRandomNumber = () => {
-    return Math.floor(Math.random() * 900) + 100;
+    return _.random(100, 999)
 };
 
 export const generateTableData = (rows: number, columns: number): Cell[][] => {
-    const data = [];
+    const data: Cell[][] = [];
+
+    const generateCell = (rowIndex: number, columnIndex: number): Cell => ({
+        id: rowIndex * columns + columnIndex + 1,
+        amount: generateThreeDigitRandomNumber()
+    });
 
     for (let i = 0; i < rows; i++) {
-        const rowData = [];
-
-        for (let j = 0; j < columns; j++) {
-            const cell = {
-                id: i * columns + j + 1,
-                amount: generateThreeDigitRandomNumber()
-            };
-            rowData.push(cell);
-        }
-
+        const rowData: Cell[] = Array.from({ length: columns }, (_, j) => generateCell(i, j));
         data.push(rowData);
     }
 
     return data;
 };
+

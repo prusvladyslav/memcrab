@@ -36,7 +36,7 @@ export const Row: React.FC<RowProps> = ({
 
     const [showPercentage, setShowPercentage] = useState(false);
 
-    const rowSum = useMemo(() => rowData.reduce((acc, cell) => acc + cell.amount, 0), [rowData])
+    const rowSum = useMemo(() => rowData.reduce((acc, cell) => acc + cell.amount, 0), [tableData])
 
     const handleHover = () => {
         setShowPercentage(true);
@@ -66,12 +66,11 @@ export const Row: React.FC<RowProps> = ({
                             backgroundImage: showPercentage
                                 ? `linear-gradient(to bottom, lightblue ${(amount / rowSum) * 100}%, transparent ${(amount / rowSum) * 100}%)`
                                 : 'none',
+                            cursor: 'pointer'
                         }}
                     >
                         <div>
-                            <p
-                                style={{ cursor: 'pointer' }}
-                            >
+                            <p>
                                 {showPercentage ? `${percentageValue(amount)}%` : amount}
                             </p>
                         </div>
@@ -89,6 +88,6 @@ export const Row: React.FC<RowProps> = ({
             <td>
                 <Button onClick={() => handleRemoveRow(rowIndex)} disabled={tableData.length === 1} text="Remove row" />
             </td>
-        </tr>
+        </tr >
     );
 };

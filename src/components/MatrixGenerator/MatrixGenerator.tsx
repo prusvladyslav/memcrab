@@ -6,19 +6,25 @@ import { generateTableData } from './helpers';
 import styles from './MatrixGenerator.module.css';
 
 export const MatrixGenerator: React.FC = () => {
-    const { tableSize, setTableSize, setTableData } = useMatrixContext();
+    const { tableSize, setTableSize, setTableData, highlightAmount, setHighlightAmount } = useMatrixContext();
     const { rows, columns } = tableSize;
-    const defaultButtonPosition = { top: 100, left: 30 }
+    const defaultButtonPosition = { top: 140, left: 30 }
     const [buttonPosition, setButtonPosition] = useState<{ top: number; left: number }>(defaultButtonPosition);
 
-    const handleInputChange = (key: 'rows' | 'columns', value: number) => {
+    const handleTableSizeChange = (key: 'rows' | 'columns', value: number) => {
         setTableSize((prev) => ({
             ...prev,
             [key]: value,
         }));
     };
 
-    const isInputsValid = rows && rows <= 100 && columns && columns <= 100;
+    const handleHighlightAmountChange = (value: number) => {
+        setHighlightAmount(value)
+    }
+
+    const maxAmountToHighlight = rows && columns ? (rows * columns) - 1 : 0
+
+    const isInputsValid: boolean = !!(rows && rows <= 99 && columns && columns <= 99 && highlightAmount && highlightAmount <= maxAmountToHighlight)
 
     useEffect(() => {
         if (isInputsValid) setButtonPosition(defaultButtonPosition)
@@ -26,7 +32,7 @@ export const MatrixGenerator: React.FC = () => {
 
     const handleGenerateMatrix = () => {
         if (!isInputsValid) return
-        setTableData(generateTableData(rows, columns))
+        setTableData(generateTableData(rows as number, columns as number))
     };
 
     const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -48,15 +54,21 @@ export const MatrixGenerator: React.FC = () => {
         <div className={styles['matrix-generator-container']} onKeyDown={handleKeyPress} tabIndex={0}>
             <div className={styles['input-container']}>
                 <label className={styles['input-label']} htmlFor="rows">
-                    Amount of Rows (0-100):
+                    Amount of Rows (1-99):
                 </label>
-                <NumberInput value={rows} onChange={(value) => handleInputChange('rows', value)} />
+                <NumberInput value={rows} onChange={(value) => handleTableSizeChange('rows', value)} />
             </div>
             <div className={styles['input-container']}>
                 <label className={styles['input-label']} htmlFor="columns">
-                    Amount of Columns (0-100):
+                    Amount of Columns (1-99):
                 </label>
-                <NumberInput value={columns} onChange={(value) => handleInputChange('columns', value)} />
+                <NumberInput value={columns} onChange={(value) => handleTableSizeChange('columns', value)} />
+            </div>
+            <div className={styles['input-container']}>
+                <label className={styles['input-label']} htmlFor="columns">
+                    Amount of Highlighted cells ({!maxAmountToHighlight ? 'fill rows & columns first' : `1-${maxAmountToHighlight}`}):
+                </label>
+                <NumberInput value={highlightAmount} onChange={(value) => handleHighlightAmountChange(value)} />
             </div>
             <Button
                 onClick={() => handleGenerateMatrix()}

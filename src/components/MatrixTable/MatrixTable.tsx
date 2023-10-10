@@ -7,7 +7,7 @@ import { calculateColumnAverages, findNearestCells } from './helpers';
 import styles from './MatrixTable.module.css';
 
 export const MatrixTable: React.FC = () => {
-    const { tableSize, setTableSize, tableData, setTableData } = useMatrixContext();
+    const { tableSize, setTableSize, tableData, setTableData, highlightAmount } = useMatrixContext();
     const columns = tableSize?.columns || 0;
     const [, setHoveredCell] = useState<{ rowIndex: number; colIndex: number } | null>(
         null
@@ -17,7 +17,7 @@ export const MatrixTable: React.FC = () => {
     const handleCellHover = (rowIndex: number, colIndex: number) => {
         setHoveredCell({ rowIndex, colIndex });
         const hoveredValue = tableData[rowIndex][colIndex].amount;
-        const nearest = findNearestCells(hoveredValue, 2, tableData);
+        const nearest = findNearestCells(hoveredValue, highlightAmount || 0, tableData);
         setNearestCells(nearest);
     };
 

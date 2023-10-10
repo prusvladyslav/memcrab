@@ -26,6 +26,8 @@ type MatrixContextType = {
   setTableSize: Dispatch<SetStateAction<TableSize>>;
   tableData: Cell[][];
   setTableData: Dispatch<SetStateAction<Cell[][]>>;
+  highlightAmount?: number
+  setHighlightAmount: Dispatch<SetStateAction<number | undefined>>
 };
 
 const MatrixContext = createContext<MatrixContextType | undefined>(undefined);
@@ -44,13 +46,16 @@ type Props = {
 
 export const MatrixProvider: React.FC<Props> = ({ children }) => {
   const [tableSize, setTableSize] = useState<TableSize>({ rows: undefined, columns: undefined });
+  const [highlightAmount, setHighlightAmount] = useState<number | undefined>(undefined)
   const [tableData, setTableData] = useState<Cell[][]>([]);
 
-  const memoizedValue = useMemo(() => ({ tableSize, setTableSize, tableData, setTableData }), [
+  const memoizedValue = useMemo(() => ({ tableSize, setTableSize, tableData, setTableData, highlightAmount, setHighlightAmount }), [
     tableSize,
     setTableSize,
     tableData,
     setTableData,
+    highlightAmount,
+    setHighlightAmount
   ]);
 
   return (

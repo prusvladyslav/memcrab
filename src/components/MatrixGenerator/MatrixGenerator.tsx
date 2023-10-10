@@ -1,4 +1,5 @@
-import React from 'react';
+import _ from 'lodash';
+import React, { useEffect, useState } from 'react';
 import { useMatrixContext } from '../../context';
 import { Button, NumberInput } from '../atoms';
 import { generateTableData } from './helpers';
@@ -7,6 +8,8 @@ import styles from './MatrixGenerator.module.css';
 export const MatrixGenerator: React.FC = () => {
     const { tableSize, setTableSize, setTableData } = useMatrixContext();
     const { rows, columns } = tableSize;
+    const defaultButtonPosition = { top: 100, left: 30 }
+    const [buttonPosition, setButtonPosition] = useState<{ top: number; left: number }>(defaultButtonPosition);
 
     const handleInputChange = (key: 'rows' | 'columns', value: number) => {
         setTableSize((prev) => ({
@@ -17,12 +20,32 @@ export const MatrixGenerator: React.FC = () => {
 
     const isInputsValid = rows && rows <= 100 && columns && columns <= 100;
 
+    useEffect(() => {
+        if (isInputsValid) setButtonPosition(defaultButtonPosition)
+    }, [isInputsValid])
+
     const handleGenerateMatrix = () => {
-        if (isInputsValid) setTableData(generateTableData(rows, columns));
+        if (!isInputsValid) return
+        setTableData(generateTableData(rows, columns))
     };
 
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === 'Enter') {
+            handleGenerateMatrix();
+        }
+    };
+
+    // Best UX practice 
+    const runAway = (e: React.MouseEvent<HTMLButtonElement>) => {
+        if (isInputsValid) return
+        setButtonPosition({
+            top: e.clientY + _.random(-50, 50),
+            left: e.clientX + _.random(-50, 50),
+        })
+    }
+
     return (
-        <div className={styles['matrix-generator-container']}>
+        <div className={styles['matrix-generator-container']} onKeyDown={handleKeyPress} tabIndex={0}>
             <div className={styles['input-container']}>
                 <label className={styles['input-label']} htmlFor="rows">
                     Amount of Rows (0-100):
@@ -37,8 +60,11 @@ export const MatrixGenerator: React.FC = () => {
             </div>
             <Button
                 onClick={() => handleGenerateMatrix()}
-                disabled={!isInputsValid}
+                // worst UX practice
+                // disabled={!isInputsValid}
                 text="Generate"
+                onMouseEnter={runAway}
+                style={{ ...buttonPosition, position: 'absolute' }}
             />
         </div>
     );

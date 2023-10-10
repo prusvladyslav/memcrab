@@ -9,7 +9,6 @@ import styles from './MatrixTable.module.css';
 export const MatrixTable: React.FC = () => {
     const { tableSize, setTableSize, tableData, setTableData } = useMatrixContext();
     const columns = tableSize?.columns || 0;
-
     const [, setHoveredCell] = useState<{ rowIndex: number; colIndex: number } | null>(
         null
     );
@@ -26,7 +25,6 @@ export const MatrixTable: React.FC = () => {
         setHoveredCell(null);
         setNearestCells([]);
     };
-
 
     const columnAverages = calculateColumnAverages(tableData);
 
